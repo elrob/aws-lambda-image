@@ -28,7 +28,6 @@ class ImageResizer {
     exec(image) {
         console.log('Resize image: ' + image.fileName);
         console.log('Resize image size: ' + image.data.length);
-        console.log('image: ' + JSON.stringify(image, 2, null));
         const acl = this.options.acl;
 
         return new Promise((resolve, reject) => {
@@ -53,6 +52,7 @@ class ImageResizer {
                 if (err) {
                     reject(err);
                 } else {
+                    console.log('buffer after resize: ' + buffer.length);
                     resolve(new ImageData(
                         image.fileName,
                         image.bucketName,
