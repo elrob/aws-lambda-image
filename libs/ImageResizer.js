@@ -31,7 +31,7 @@ class ImageResizer {
         const acl = this.options.acl;
 
         return new Promise((resolve, reject) => {
-            var img = gm(image.data).geometry(this.options.size.toString());
+            var img = gm(image.data, image.fileName).geometry(this.options.size.toString());
             if ( "gravity" in this.options ) {
                 img = img.gravity(this.options.gravity);
             }
