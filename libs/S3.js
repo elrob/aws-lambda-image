@@ -26,6 +26,8 @@ class S3 {
                     return;
                 }
 
+                console.log('data.ContentType: ' + data.ContentType);
+                console.log('data.CacheControl: ' + data.CacheControl);
                 resolve(new ImageData(
                     key,
                     bucket,
