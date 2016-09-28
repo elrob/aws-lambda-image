@@ -74,6 +74,11 @@ class S3 {
     static putObjects(images) {
         return Promise.all(images.map((image) => {
             return new Promise((resolve, reject) => {
+                console.log('image.bucketName: ' + image.bucketName);
+                console.log('image.fileName: ' + image.fileName);
+                console.log('image.data.length: ' + image.data.length);
+                console.log('image.headers: ' + image.headers);
+                console.log('image.acl: ' + image.acl);
                 S3.putObject(image.bucketName, image.fileName, image.data, image.headers, image.acl)
                 .then(() => resolve(image))
                 .catch((message) => reject(message));
