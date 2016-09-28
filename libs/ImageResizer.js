@@ -26,6 +26,9 @@ class ImageResizer {
      * @return Promise
      */
     exec(image) {
+        console.log('Resize image: ' + image.fileName);
+        console.log('Resize image size: ' + image.data.length);
+        console.log('image: ' + JSON.stringify(image, 2, null));
         const acl = this.options.acl;
 
         return new Promise((resolve, reject) => {

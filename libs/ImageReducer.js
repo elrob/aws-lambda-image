@@ -30,6 +30,9 @@ class ImageReducer {
      * @return Promise
      */
     exec(image) {
+        console.log('Reduce image: ' + image.fileName);
+        console.log('Reduce image size: ' + image.data.length);
+        console.log('image: ' + JSON.stringify(image, 2, null));
         const option = this.option;
 
         const input   = new ReadableStream(image.data);

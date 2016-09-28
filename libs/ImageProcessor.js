@@ -46,6 +46,7 @@ class ImageProcessor {
      * @return Promise
      */
     processImage(imageData, config) {
+        console.log('Processing image: ' + imageData.fileName);
         const jpegOptimizer = config.get("jpegOptimizer", "mozjpeg");
         const promiseList   = config.get("resizes", []).filter((option) => {
             return option.size &&
