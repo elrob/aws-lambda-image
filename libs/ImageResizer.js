@@ -47,6 +47,8 @@ class ImageResizer {
 
         return new Promise((resolve, reject) => {
             console.log('size: ' + this.options.size);
+            console.log('image.data[5]: ' + image.data[5]);
+
 	    var img;
 	    if (image.type === 'gif') {
 	      var temp_file = mktemp.createFileSync("/tmp/XXXXXXXXXX.gif")
@@ -58,7 +60,7 @@ class ImageResizer {
             }
 
 	              img.geometry(this.options.size.toString())
-                      .toBuffer(function (err, buffer) {
+                      .toBuffer("png", function (err, buffer) {
                          console.log('buffer: ' + buffer.length);
                          if (err) 
                            reject(err);
