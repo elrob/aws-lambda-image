@@ -21,6 +21,9 @@ exports.handler = (event, context) => {
         JSON.parse(fs.readFileSync(configPath, { encoding: "utf8" }))
     );
 
+    process.env.PATH = './imagemagick/bin:' + process.env.PATH;
+    console.log(process.env.PATH);
+
     processor.run(config)
     .then((processedImages) => {
         var message = "OK, " + processedImages.length + " images were processed.";
