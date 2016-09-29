@@ -43,44 +43,22 @@ class ImageResizer {
         const acl = this.options.acl;
 
         return new Promise((resolve, reject) => {
-            var img = gm(image.data, image.fileName).geometry(this.options.size.toString());
-            if ( "gravity" in this.options ) {
-                img = img.gravity(this.options.gravity);
-            }
-            if ( "background" in this.options ) {
-              img = img.background(this.options.background).flatten();
-            }
-            if ( "crop" in this.options ) {
-                var cropArgs = this.options.crop.match(cropSpec);
-                const cropWidth = cropArgs[1];
-                const cropHeight = cropArgs[2];
-                const cropX = cropArgs[3];
-                const cropY = cropArgs[4];
-                const cropPercent = cropArgs[5];
-                img = img.crop(cropWidth, cropHeight, cropX, cropY, cropPercent === "%");
-            }
+            var img = gm(image.data)
+	              .geometry(this.options.size.toString())
+                      .toBuffer(function (err, buffer) {
+                         if (err) 
+                           reject(err);
+			 resolve(new ImageData(
+						 image.fileName,
+						 image.bucketName,
+						 buffer,
+						 image.headers,
+						 acl
+					      )); 
+			 })});
+                              
 
-            function toBufferHandler(err, buffer) {
-                if (err) {
-                    reject(err);
-                } else {
-                    console.log('buffer after resize: ' + buffer.length);
-                    resolve(new ImageData(
-                        image.fileName,
-                        image.bucketName,
-                        buffer,
-                        image.headers,
-                        acl
-                    ));
-                }
-            }
 
-            if ( "format" in this.options ) {
-                img.toBuffer(this.options.format, toBufferHandler);
-            } else {
-                img.toBuffer(toBufferHandler);
-            }
-        });
     }
 }
 
