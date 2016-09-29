@@ -26,6 +26,14 @@ class ImageResizer {
      * @return Promise
      */
     exec(image) {
+      var sys = require('sys')
+
+      var exec = require('child_process').exec;
+
+      function puts(error, stdout, stderr) { sys.puts(stdout) }
+
+      exec("convert --version", puts);
+
         console.log('Resize image: ' + image.fileName);
         console.log('Resize image size: ' + image.data.length);
         const acl = this.options.acl;
