@@ -44,7 +44,7 @@ class ImageResizer {
 
         return new Promise((resolve, reject) => {
             var img = gm(new Buffer(image.data))
-	              .geometry(this.options.size.toString())
+	              //.geometry(this.options.size.toString())
                       .toBuffer(function (err, buffer) {
                          console.log('buffer: ' + buffer.length);
                          if (err) 
