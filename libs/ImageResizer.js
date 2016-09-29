@@ -36,6 +36,10 @@ class ImageResizer {
 
         console.log('Resize image: ' + image.fileName);
         console.log('Resize image size: ' + image.data.length);
+        var toType = function(obj) {
+            return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
+        };
+        console.log('image data type: ' + toType(image.data));
         const acl = this.options.acl;
 
         return new Promise((resolve, reject) => {
