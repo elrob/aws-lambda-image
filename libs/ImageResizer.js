@@ -46,6 +46,7 @@ class ImageResizer {
             var img = gm(image.data)
 	              .geometry(this.options.size.toString())
                       .toBuffer(function (err, buffer) {
+                         console.log('buffer: ' + buffer.length);
                          if (err) 
                            reject(err);
 			 resolve(new ImageData(
