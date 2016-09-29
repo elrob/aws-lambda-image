@@ -10,6 +10,7 @@ lambda:
 	@cp -R node_modules build/node_modules
 	@cp -R libs build/
 	@cp -R bin build/
+	@cp -R imagemagick build/
 	@rm -rf build/bin/darwin
 	@echo "Create package archive..."
 	@cd build && zip -rq aws-lambda-image.zip .
@@ -24,7 +25,7 @@ test:
 
 configtest:
 	@./bin/configtest
-	
+
 
 clean:
 	@echo "clean up package files"
