@@ -24,6 +24,14 @@ exports.handler = (event, context) => {
     process.env.PATH = './imagemagick/bin:' + process.env.PATH;
     console.log(process.env.PATH);
 
+    var sys = require('sys')
+
+	    var exec = require('child_process').exec;
+
+    function puts(error, stdout, stderr) { sys.puts(stdout) }
+
+    exec("convert --version", puts);
+
     processor.run(config)
     .then((processedImages) => {
         var message = "OK, " + processedImages.length + " images were processed.";
