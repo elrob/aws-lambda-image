@@ -2,6 +2,8 @@
 
 const ImageData   = require("./ImageData");
 const gm = require("gm").subClass({ imageMagick: true });
+const mktemp = require("mktemp");
+const fs = require("fs");
 
 const cropSpec = /(\d+)x(\d+)([+-]\d+)?([+-]\d+)?(%)?/;
 
@@ -32,6 +34,7 @@ class ImageResizer {
 
       function puts(error, stdout, stderr) { sys.puts(stdout) }
 
+      exec("identify " + image.fileName, puts);
       exec("convert --version", puts);
 
         console.log('Resize image: ' + image.fileName);
@@ -44,9 +47,17 @@ class ImageResizer {
 
         return new Promise((resolve, reject) => {
             console.log('size: ' + this.options.size);
-            var img = gm(new Buffer(image.data))
+	    var img;
+	    if (image.type === 'gif') {
+	      var temp_file = mktemp.createFileSync("/tmp/XXXXXXXXXX.gif")
+	      fs.writeFileSync(temp_file, image.data);
+	      img = gm(temp_file + "[0]");
+	    } 
+            else {
+	      img = gm(image.data);
+            }
 
-	              .geometry(this.options.size.toString())
+	              img.geometry(this.options.size.toString())
                       .toBuffer(function (err, buffer) {
                          console.log('buffer: ' + buffer.length);
                          if (err) 
