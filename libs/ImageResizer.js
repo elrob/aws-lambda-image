@@ -43,7 +43,7 @@ class ImageResizer {
         const acl = this.options.acl;
 
         return new Promise((resolve, reject) => {
-            var img = gm(image.data)
+            var img = gm(new Buffer(image.data))
 	              .geometry(this.options.size.toString())
                       .toBuffer(function (err, buffer) {
                          console.log('buffer: ' + buffer.length);
