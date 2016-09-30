@@ -2,37 +2,85 @@
 
 const ImageResizer = require("../libs/ImageResizer");
 const ImageData    = require("../libs/ImageData");
-const gm = require("gm").subClass({ imageMagick: true });
+const sharp = require('sharp');
 
 const expect     = require("chai").expect;
 const fs         = require("fs");
 const path       = require("path");
-const destPath   = path.join(__dirname, "/fixture/fixture_resized.gif");
 
-describe("Resize GIF Test", () => {
+describe.only("Resizer", () => {
 
-    it("Resize GIF with gifsicle", (done) => {
-        const resizer = new ImageResizer({size: 200});
-        const buffer  = fs.readFileSync(path.join(__dirname, "/fixture/fixture.gif"), {encoding: "binary"});
+    it("Resizes GIF", () => {
+        const size = 200;
+        const resizer = new ImageResizer({size: size});
+	const srcPath = path.join(__dirname, "/fixture/fixture.gif");
+	const outPath = path.join(__dirname, "/fixture/fixture_resized_from_gif.png");
+        const buffer  = fs.readFileSync(srcPath, {encoding: "binary"});
         const image   = new ImageData("fixture/fixture.gif", "fixture", buffer);
 
         resizer.exec(image)
         .then((resized) => {
-            fs.writeFileSync(destPath, resized.data, {encoding: "binary"});
-            gm(destPath).size((err, out) => {
-                if ( err ) {
-                    expect.fail(err);
-                } else {
-                    expect(out.width).to.equal(200);
-                }
-                fs.unlinkSync(destPath);
-                done();
-            });
-        })
-        .catch((err) => {
-            done(err);
+            fs.writeFileSync(outPath, resized.data, {encoding: "binary"});
+            sharp(destPath)
+                .metadata()
+                .then(function(metadata) {
+                    if ( err ) {
+                        expect.fail(err);
+		    } else {
+		        expect(metadata.width).to.equal(size);
+			expect(metadata.format).to.equal('png');
+                    }
+		});
         });
-
     });
 
+    it("Resizes PNG", () => {
+        const size = 250;
+        const resizer = new ImageResizer({size: size});
+        const fixture = "fixture/fixture.png";
+	const srcPath = path.join(__dirname, fixture);
+	const outPath = path.join(__dirname, "/fixture/fixture_resized_from_png.png");
+        const buffer  = fs.readFileSync(srcPath, {encoding: "binary"});
+        const image   = new ImageData(fixture, "fixture", buffer);
+
+        resizer.exec(image)
+        .then((resized) => {
+            fs.writeFileSync(outPath, resized.data, {encoding: "binary"});
+            sharp(destPath)
+                .metadata()
+                .then(function(metadata) {
+                    if ( err ) {
+                        expect.fail(err);
+		    } else {
+		        expect(metadata.width).to.equal(size);
+			expect(metadata.format).to.equal('png');
+                    }
+		});
+        });
+    });
+
+    it("Resizes JPG", () => {
+        const size = 300;
+        const resizer = new ImageResizer({size: size});
+        const fixture = "fixture/fixture.jpg";
+	const srcPath = path.join(__dirname, fixture);
+	const outPath = path.join(__dirname, "/fixture/fixture_resized_from_jpg.png");
+        const buffer  = fs.readFileSync(srcPath, {encoding: "binary"});
+        const image   = new ImageData(fixture, "fixture", buffer);
+
+        resizer.exec(image)
+        .then((resized) => {
+            fs.writeFileSync(outPath, resized.data, {encoding: "binary"});
+            sharp(destPath)
+                .metadata()
+                .then(function(metadata) {
+                    if ( err ) {
+                        expect.fail(err);
+		    } else {
+		        expect(metadata.width).to.equal(size);
+			expect(metadata.format).to.equal('png');
+                    }
+		});
+        });
+    });
 });
