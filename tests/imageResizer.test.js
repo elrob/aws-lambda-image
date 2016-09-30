@@ -14,7 +14,6 @@ describe("Resizer", () => {
     const size = "100x120";
     const resizer = new ImageResizer({size: size, acl: "some_acl", directory: "some/output/directory" });
     const srcPath = path.join(__dirname, "/fixture/fixture.gif");
-    const outPath = path.join(__dirname, "/fixture/fixture_resized_from_gif.png");
     const buffer  = fs.readFileSync(srcPath, {encoding: "binary"});
     const image   = new ImageData("fixture/fixture.gif", "fixture", buffer);
 
@@ -24,7 +23,7 @@ describe("Resizer", () => {
     return resizer.exec(image)
     .then((resized) => {
       expect(resized.fileName).to.equal('some/output/directory/fixture.png');
-      return sharp(outPath).metadata()
+      return sharp(resized.data).metadata()
     })
     .then((metadata) => {
       expect(metadata.width).to.equal(100);
@@ -37,7 +36,6 @@ describe("Resizer", () => {
     const resizer = new ImageResizer({size: size, acl: "some_acl", directory: "some/output/directory" });
     const fixture = "fixture/fixture.png";
     const srcPath = path.join(__dirname, fixture);
-    const outPath = path.join(__dirname, "/fixture/fixture_resized_from_png.png");
     const buffer  = fs.readFileSync(srcPath, {encoding: "binary"});
     const image   = new ImageData(fixture, "fixture", buffer);
 
@@ -47,7 +45,7 @@ describe("Resizer", () => {
     return resizer.exec(image)
     .then((resized) => {
       expect(resized.fileName).to.equal('some/output/directory/fixture.png');
-      return sharp(outPath).metadata()
+      return sharp(resized.data).metadata()
     })
     .then((metadata) => {
       expect(metadata.height).to.equal(115);
@@ -60,7 +58,6 @@ describe("Resizer", () => {
     const resizer = new ImageResizer({size: size, acl: "some_acl", directory: "some/output/directory" });
     const fixture = "fixture/fixture.jpg";
     const srcPath = path.join(__dirname, fixture);
-    const outPath = path.join(__dirname, "/fixture/fixture_resized_from_jpg.png");
     const buffer  = fs.readFileSync(srcPath, {encoding: "binary"});
     const image   = new ImageData(fixture, "fixture", buffer);
 
@@ -70,7 +67,7 @@ describe("Resizer", () => {
     return resizer.exec(image)
     .then((resized) => {
       expect(resized.fileName).to.equal('some/output/directory/fixture.png');
-      return sharp(outPath).metadata()
+      return sharp(resized.data).metadata()
     })
     .then((metadata) => {
       expect(metadata.height).to.equal(90);

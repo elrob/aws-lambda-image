@@ -23,7 +23,7 @@ class ImageResizer {
           reject(err);
         } else {
           resolve(new ImageData(
-            path.join(that.directory, image.baseName),
+            path.join(that.directory, path.basename(image.fileName, path.extname(image.fileName)) + '.png'),
             image.bucketName,
             buffer,
             image.headers,
