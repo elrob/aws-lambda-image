@@ -10,9 +10,9 @@ const expect     = require("chai").expect;
 const fs         = require("fs");
 const path       = require("path");
 const sourceFile = path.join(__dirname, "/fixture/event_source.json");
-const setting    = JSON.parse(fs.readFileSync(sourceFile));
+const event      = JSON.parse(fs.readFileSync(sourceFile));
 
-describe("Optimize JPEG Test", () => {
+describe("Resize JPEG Test", () => {
     let processor;
 
     before(() => {
@@ -23,8 +23,8 @@ describe("Optimize JPEG Test", () => {
                         reject(err);
                     } else {
                         resolve(new ImageData(
-                            setting.Records[0].s3.object.key,
-                            setting.Records[0].s3.bucket.name,
+                            event.Records[0].s3.object.key,
+                            event.Records[0].s3.bucket.name,
                             data
                         ));
                     }
@@ -44,28 +44,18 @@ describe("Optimize JPEG Test", () => {
     });
 
     beforeEach(() => {
-        processor = new ImageProcessor(setting.Records[0].s3, {
+        processor = new ImageProcessor(event.Records[0].s3, {
             done: () => {},
             fail: () => {}
         });
     });
 
-    it("Reduce JPEG with no configuration", (done) => {
-        processor.run(new Config({}))
-        .then((images) => {
-            // no working
-            expect(images).to.have.length(0);
-            done();
-        })
-        .catch((err) => {
-            console.log(err);
-            done();
-        });
-    });
-
-    it("Reduce JPEG with basic configuration", (done) => {
-        processor.run(new Config({
-            reduce: {}
+    it("Reduce JPEG with bucket/directory configuration", () => {
+        return processor.run(new Config({
+            "resizes": [{
+              "size": "40x50",
+              "directory": "some/path/for/resized"
+            }]
         }))
         .then((images) => {
             expect(images).to.have.length(1);
@@ -73,40 +63,8 @@ describe("Optimize JPEG Test", () => {
             const buf = fs.readFileSync(path.join(__dirname, "/fixture/fixture.jpg"), {encoding: "binary"});
 
             expect(image.bucketName).to.equal("sourcebucket");
-            expect(image.fileName).to.equal("HappyFace.jpg");
-            expect(image.data.length).to.be.above(0)
-                                         .and.be.below(buf.length);
-            done();
-        })
-        .catch((messages) => {
-            console.log(messages);
-            //expect.fail(messages);
-            done();
-        });
-    });
-
-    it("Reduce JPEG with bucket/directory configuration", (done) => {
-        processor.run(new Config({
-            "reduce": {
-                "bucket": "foo",
-                "directory": "some"
-            }
-        }))
-        .then((images) => {
-            expect(images).to.have.length(1);
-            const image = images.shift();
-            const buf = fs.readFileSync(path.join(__dirname, "/fixture/fixture.jpg"), {encoding: "binary"});
-
-            expect(image.bucketName).to.equal("foo");
-            expect(image.fileName).to.equal("some/HappyFace.jpg");
-            expect(image.data.length).to.be.above(0)
-                                         .and.be.below(buf.length);
-            done();
-        })
-        .catch((messages) => {
-            console.log(messages);
-            //expect.fail(messages);
-            done();
+            expect(image.fileName).to.equal("some/path/for/resized/HappyFace.png");
+            expect(image.data.length).to.be.above(0).and.be.below(buf.length);
         });
     });
 });

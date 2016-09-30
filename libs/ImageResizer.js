@@ -1,40 +1,45 @@
 "use strict";
 
-const ImageData   = require("./ImageData");
+const ImageData = require("./ImageData");
 const sharp = require('sharp');
+const path = require("path");
 
 class ImageResizer {
 
-    constructor(options) {
-        this.options = options;
-    }
+  constructor(options) {
+    var sizes = options.size.split('x');
+    this.width = parseInt(sizes[0]);
+    this.height = parseInt(sizes[1]);
+    this.directory = options.directory;
+    this.acl = options.acl;
+  }
 
-    exec(image) {
-        const acl = this.options.acl;
+  exec(image) {
+    var that = this;
+    return new Promise((resolve, reject) => {
 
-        return new Promise((resolve, reject) => {
-            function toBufferHandler(err, buffer) {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(new ImageData(
-                        image.fileName,
-                        image.bucketName,
-                        buffer,
-                        image.headers,
-                        acl
-                    ));
-                }
-            }
+      function toBufferHandler(err, buffer) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(new ImageData(
+            path.join(that.directory, image.baseName),
+            image.bucketName,
+            buffer,
+            image.headers,
+            that.acl
+          ));
+        }
+      }
 
-            sharp(image.data)
-	    .png()
-	    .resize(this.options.size, this.options.size)
-	    .max()
-	    .withoutEnlargement()
-            .toBuffer(toBufferHandler);
-        });
-    }
+      sharp(image.data)
+      .png()
+      .resize(this.width, this.height)
+      .max()
+      .withoutEnlargement()
+      .toBuffer(toBufferHandler);
+    });
+  }
 }
 
 module.exports = ImageResizer;

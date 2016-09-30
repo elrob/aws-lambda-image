@@ -3,7 +3,8 @@
   "version": "0.8.0",
   "description": "An AWS Lambda Function to resize/reduce images automatically",
   "scripts": {
-    "test": "make test",
+    "test": "mocha tests --recursive -R spec --timeout 5000",
+    "test-watch": "npm test -- --watch",
     "postinstall": "[ -f config.json ] || cp config.json.sample config.json"
   },
   "keywords": [
@@ -15,7 +16,6 @@
   "license": "MIT",
   "dependencies": {
     "aws-sdk": "2.3.9",
-    "gm": "^1.23.0",
     "lodash": "4.12.0",
     "sharp": "^0.16.0"
   },

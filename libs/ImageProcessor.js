@@ -36,12 +36,7 @@ class ImageProcessor {
     execResizeImage(option, imageData) {
         const resizer = new ImageResizer(option);
 
-        return resizer.exec(imageData)
-        .then((resizedImage) => {
-            const reducer = new ImageReducer(option);
-
-            return reducer.exec(resizedImage);
-        });
+        return resizer.exec(imageData);
     }
 }
 
